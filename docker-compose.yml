@@ -4,9 +4,32 @@ services:
   flask:
     container_name: myFlask
     build: ./flask
-    command: python hello.py
+    # command: python hello.py
+    command: gunicorn hello:app --bind 172.16.239.6:5000
     environment: 
       - LINE_CHANNEL_ACCESS_TOKEN=${LINE_CHANNEL_ACCESS_TOKEN}
       - LINE_CHANNEL_SECRET=${LINE_CHANNEL_SECRET}
+    networks: 
+      flasknet:
+        ipv4_address: 172.16.239.6
     ports:
       - 5000:5000
+
+  nginx:
+    container_name: myFlaskNginx
+    build: ./nginx
+    networks: 
+      flasknet:
+        ipv4_address: 172.16.239.7      
+    ports:
+      - 80:80
+    depends_on: 
+      - flask
+      
+networks: 
+  flasknet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.239.0/24
