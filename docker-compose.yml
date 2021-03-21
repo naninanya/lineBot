@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  flask:
+    container_name: myFlask
+    build: ./flask
+    command: python hello.py
+    environment: 
+      - LINE_CHANNEL_ACCESS_TOKEN=${LINE_CHANNEL_ACCESS_TOKEN}
+      - LINE_CHANNEL_SECRET=${LINE_CHANNEL_SECRET}
+    ports:
+      - 5000:5000
